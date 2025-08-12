@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>manus – مساعدك الذكي</title>
+    <meta name="theme-color" content="#0b0f14" />
+    <link rel="manifest" href="/manifest.webmanifest" />
+    <link rel="icon" href="/static/icons/icon.svg" />
+    <meta name="description" content="manus: واجهة ويب تعمل كتطبيق PWA للتفاعل مع OpenManus" />
+    <link rel="stylesheet" href="/static/styles.css" />
+  </head>
+  <body>
+    <header class="app-header">
+      <div class="brand">manus</div>
+      <button id="installBtn" class="ghost">تثبيت التطبيق</button>
+    </header>
+
+    <main class="container">
+      <h1>مرحباً، كيف يمكنني مساعدتك؟</h1>
+      <form id="promptForm">
+        <div class="prompt-box">
+          <input id="promptInput" type="text" placeholder="قم بتعيين مهمة أو اسأل أي شيء" autocomplete="off" />
+          <button id="sendBtn" type="submit">إرسال</button>
+        </div>
+      </form>
+
+      <section class="output" id="output"></section>
+    </main>
+
+    <script src="/static/app.js" type="module"></script>
+  </body>
+</html>
