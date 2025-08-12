@@ -10,7 +10,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse, HTMLResponse, Response
 from fastapi.staticfiles import StaticFiles
 
-from app.agent.manus import Manus
+# Lazy import Manus inside handlers to avoid heavy startup time
 from app.logger import logger
 
 
@@ -78,6 +78,8 @@ async def service_worker() -> Any:
 @app.websocket("/ws")
 async def ws_run(ws: WebSocket) -> Any:
     await ws.accept()
+    # Imported lazily to reduce server cold-start
+    from app.agent.manus import Manus  # type: ignore
     agent: Manus | None = None
     try:
         # Receive a JSON message: {"prompt": "..."}
