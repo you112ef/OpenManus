@@ -1,0 +1,25 @@
+{
+  "name": "openmanus-web",
+  "version": "1.0.0",
+  "description": "OpenManus AI Agent Web Interface",
+  "main": "index.html",
+  "scripts": {
+    "build": "echo 'No build step required for static site'",
+    "dev": "python -m http.server 8000",
+    "test": "echo 'No tests specified'"
+  },
+  "keywords": [
+    "ai",
+    "agent",
+    "openmanus",
+    "chat",
+    "interface"
+  ],
+  "author": "OpenManus Team",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/FoundationAgents/OpenManus.git"
+  },
+  "homepage": "https://openmanus.pages.dev"
+}

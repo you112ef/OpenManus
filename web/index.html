@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OpenManus - AI Agent Interface</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        .gradient-bg {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        .chat-container {
+            height: calc(100vh - 200px);
+        }
+        .message {
+            animation: fadeIn 0.3s ease-in;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .typing-indicator {
+            display: none;
+        }
+        .typing-indicator.show {
+            display: block;
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <!-- Header -->
+    <header class="gradient-bg text-white shadow-lg">
+        <div class="container mx-auto px-6 py-4">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center space-x-3">
+                    <i class="fas fa-robot text-3xl"></i>
+                    <h1 class="text-2xl font-bold">OpenManus</h1>
+                </div>
+                <div class="text-sm opacity-90">
+                    AI Agent Interface
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="container mx-auto px-6 py-6">
+        <!-- Chat Interface -->
+        <div class="bg-white rounded-lg shadow-lg overflow-hidden">
+            <!-- Chat Header -->
+            <div class="bg-gray-800 text-white px-6 py-4">
+                <h2 class="text-lg font-semibold">Chat with OpenManus</h2>
+                <p class="text-sm opacity-90">Ask me anything and I'll help you achieve your goals!</p>
+            </div>
+
+            <!-- Chat Messages -->
+            <div id="chatMessages" class="chat-container overflow-y-auto p-6 space-y-4">
+                <div class="message flex items-start space-x-3">
+                    <div class="flex-shrink-0">
+                        <div class="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center">
+                            <i class="fas fa-robot text-white text-sm"></i>
+                        </div>
+                    </div>
+                    <div class="flex-1">
+                        <div class="bg-blue-100 rounded-lg p-3">
+                            <p class="text-gray-800">Hello! I'm OpenManus, your AI agent. I can help you with various tasks, answer questions, and assist with your projects. What would you like me to help you with today?</p>
+                        </div>
+                        <p class="text-xs text-gray-500 mt-1">Just now</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Typing Indicator -->
+            <div id="typingIndicator" class="typing-indicator px-6 pb-4">
+                <div class="flex items-center space-x-3">
+                    <div class="flex-shrink-0">
+                        <div class="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center">
+                            <i class="fas fa-robot text-white text-sm"></i>
+                        </div>
+                    </div>
+                    <div class="flex-1">
+                        <div class="bg-blue-100 rounded-lg p-3">
+                            <div class="flex space-x-1">
+                                <div class="w-2 h-2 bg-blue-400 rounded-full animate-bounce"></div>
+                                <div class="w-2 h-2 bg-blue-400 rounded-full animate-bounce" style="animation-delay: 0.1s"></div>
+                                <div class="w-2 h-2 bg-blue-400 rounded-full animate-bounce" style="animation-delay: 0.2s"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Input Area -->
+            <div class="border-t border-gray-200 p-6">
+                <form id="chatForm" class="flex space-x-3">
+                    <input 
+                        type="text" 
+                        id="messageInput" 
+                        placeholder="Type your message here..." 
+                        class="flex-1 border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                        required
+                    >
+                    <button 
+                        type="submit" 
+                        class="bg-blue-500 hover:bg-blue-600 text-white px-6 py-2 rounded-lg transition-colors duration-200 flex items-center space-x-2"
+                    >
+                        <i class="fas fa-paper-plane"></i>
+                        <span>Send</span>
+                    </button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Features Section -->
+        <div class="mt-8 grid md:grid-cols-3 gap-6">
+            <div class="bg-white rounded-lg shadow-lg p-6">
+                <div class="text-center">
+                    <i class="fas fa-brain text-4xl text-blue-500 mb-4"></i>
+                    <h3 class="text-lg font-semibold mb-2">AI-Powered</h3>
+                    <p class="text-gray-600">Advanced language models for intelligent responses and task execution</p>
+                </div>
+            </div>
+            <div class="bg-white rounded-lg shadow-lg p-6">
+                <div class="text-center">
+                    <i class="fas fa-tools text-4xl text-green-500 mb-4"></i>
+                    <h3 class="text-lg font-semibold mb-2">Multi-Tool Support</h3>
+                    <p class="text-gray-600">Access to various tools and APIs for comprehensive assistance</p>
+                </div>
+            </div>
+            <div class="bg-white rounded-lg shadow-lg p-6">
+                <div class="text-center">
+                    <i class="fas fa-shield-alt text-4xl text-purple-500 mb-4"></i>
+                    <h3 class="text-lg font-semibold mb-2">Secure & Private</h3>
+                    <p class="text-gray-600">Your conversations and data are protected and private</p>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-gray-800 text-white mt-12">
+        <div class="container mx-auto px-6 py-8">
+            <div class="text-center">
+                <p class="text-sm opacity-90">
+                    OpenManus - Open Source AI Agent Framework
+                </p>
+                <div class="mt-4 flex justify-center space-x-4">
+                    <a href="https://github.com/FoundationAgents/OpenManus" class="text-gray-400 hover:text-white transition-colors">
+                        <i class="fab fa-github text-xl"></i>
+                    </a>
+                    <a href="https://discord.gg/DYn29wFk9z" class="text-gray-400 hover:text-white transition-colors">
+                        <i class="fab fa-discord text-xl"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
