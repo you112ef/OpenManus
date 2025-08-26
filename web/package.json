@@ -4,16 +4,26 @@
   "description": "OpenManus AI Agent Web Interface",
   "main": "index.html",
   "scripts": {
-    "build": "echo 'No build step required for static site'",
-    "dev": "python -m http.server 8000",
-    "test": "echo 'No tests specified'"
+    "dev": "python -m http.server 8001",
+    "backend": "python app.py",
+    "backend:dev": "uvicorn app:app --reload --host 0.0.0.0 --port 8000",
+    "docker:build": "docker build -t openmanus-web .",
+    "docker:run": "docker run -p 8000:8000 openmanus-web",
+    "docker:compose": "docker-compose up -d",
+    "docker:compose:down": "docker-compose down",
+    "test": "python -m pytest tests/",
+    "lint": "python -m flake8 .",
+    "format": "python -m black .",
+    "start": "echo 'Starting OpenManus Web Interface...' && python app.py"
   },
   "keywords": [
     "ai",
     "agent",
     "openmanus",
     "chat",
-    "interface"
+    "interface",
+    "fastapi",
+    "python"
   ],
   "author": "OpenManus Team",
   "license": "MIT",
@@ -21,5 +31,8 @@
     "type": "git",
     "url": "https://github.com/FoundationAgents/OpenManus.git"
   },
-  "homepage": "https://openmanus.pages.dev"
+  "homepage": "https://openmanus.pages.dev",
+  "engines": {
+    "node": ">=16.0.0"
+  }
 }

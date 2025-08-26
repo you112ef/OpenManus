@@ -1,44 +1,127 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>OpenManus - AI Agent Interface</title>
+    <title>OpenManus - واجهة الذكاء الاصطناعي</title>
+    <meta name="description" content="OpenManus - إطار عمل وكيل الذكاء الاصطناعي مفتوح المصدر">
+    <meta name="keywords" content="AI, Agent, OpenManus, الذكاء الاصطناعي, وكيل ذكي">
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
+        @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700&display=swap');
+        
+        body {
+            font-family: 'Cairo', sans-serif;
+        }
+        
         .gradient-bg {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
         }
+        
         .chat-container {
-            height: calc(100vh - 200px);
+            height: calc(100vh - 250px);
         }
+        
         .message {
             animation: fadeIn 0.3s ease-in;
         }
+        
         @keyframes fadeIn {
             from { opacity: 0; transform: translateY(10px); }
             to { opacity: 1; transform: translateY(0); }
         }
+        
         .typing-indicator {
             display: none;
         }
+        
         .typing-indicator.show {
             display: block;
         }
+        
+        .status-indicator {
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+        
+        .status-indicator.online {
+            background-color: #dcfce7;
+            color: #166534;
+        }
+        
+        .status-indicator.offline {
+            background-color: #fecaca;
+            color: #991b1b;
+        }
+        
+        .rtl {
+            direction: rtl;
+        }
+        
+        .ltr {
+            direction: ltr;
+        }
+        
+        /* Custom scrollbar */
+        .chat-container::-webkit-scrollbar {
+            width: 6px;
+        }
+        
+        .chat-container::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 3px;
+        }
+        
+        .chat-container::-webkit-scrollbar-thumb {
+            background: #c1c1c1;
+            border-radius: 3px;
+        }
+        
+        .chat-container::-webkit-scrollbar-thumb:hover {
+            background: #a8a8a8;
+        }
+        
+        /* Loading animation */
+        .loading-dots {
+            display: inline-block;
+        }
+        
+        .loading-dots::after {
+            content: '';
+            animation: dots 1.5s steps(5, end) infinite;
+        }
+        
+        @keyframes dots {
+            0%, 20% { content: ''; }
+            40% { content: '.'; }
+            60% { content: '..'; }
+            80%, 100% { content: '...'; }
+        }
     </style>
 </head>
-<body class="bg-gray-50">
+<body class="bg-gray-50 rtl">
     <!-- Header -->
     <header class="gradient-bg text-white shadow-lg">
         <div class="container mx-auto px-6 py-4">
             <div class="flex items-center justify-between">
-                <div class="flex items-center space-x-3">
+                <div class="flex items-center space-x-3 space-x-reverse">
                     <i class="fas fa-robot text-3xl"></i>
-                    <h1 class="text-2xl font-bold">OpenManus</h1>
+                    <div>
+                        <h1 class="text-2xl font-bold">OpenManus</h1>
+                        <p class="text-sm opacity-90">واجهة الذكاء الاصطناعي</p>
+                    </div>
                 </div>
-                <div class="text-sm opacity-90">
-                    AI Agent Interface
+                <div class="flex items-center space-x-4 space-x-reverse">
+                    <div id="apiStatus" class="status-indicator online">
+                        🟢 متصل
+                    </div>
+                    <button id="clearChat" class="bg-white bg-opacity-20 hover:bg-opacity-30 text-white px-3 py-1 rounded-lg text-sm transition-all duration-200">
+                        <i class="fas fa-trash ml-1"></i>
+                        مسح المحادثة
+                    </button>
                 </div>
             </div>
         </div>
@@ -50,13 +133,22 @@
         <div class="bg-white rounded-lg shadow-lg overflow-hidden">
             <!-- Chat Header -->
             <div class="bg-gray-800 text-white px-6 py-4">
-                <h2 class="text-lg font-semibold">Chat with OpenManus</h2>
-                <p class="text-sm opacity-90">Ask me anything and I'll help you achieve your goals!</p>
+                <div class="flex items-center justify-between">
+                    <div>
+                        <h2 class="text-lg font-semibold">محادثة مع OpenManus</h2>
+                        <p class="text-sm opacity-90">اسألني أي شيء وسأساعدك في تحقيق أهدافك!</p>
+                    </div>
+                    <div class="text-xs opacity-75">
+                        <div>اختصارات لوحة المفاتيح:</div>
+                        <div>Ctrl+K للتركيز على الإدخال</div>
+                        <div>Ctrl+L لمسح المحادثة</div>
+                    </div>
+                </div>
             </div>
 
             <!-- Chat Messages -->
             <div id="chatMessages" class="chat-container overflow-y-auto p-6 space-y-4">
-                <div class="message flex items-start space-x-3">
+                <div class="message flex items-start space-x-3 space-x-reverse">
                     <div class="flex-shrink-0">
                         <div class="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center">
                             <i class="fas fa-robot text-white text-sm"></i>
@@ -64,16 +156,16 @@
                     </div>
                     <div class="flex-1">
                         <div class="bg-blue-100 rounded-lg p-3">
-                            <p class="text-gray-800">Hello! I'm OpenManus, your AI agent. I can help you with various tasks, answer questions, and assist with your projects. What would you like me to help you with today?</p>
+                            <p class="text-gray-800">مرحباً! أنا OpenManus، وكيل الذكاء الاصطناعي الخاص بك. يمكنني مساعدتك في مهام مختلفة، والإجابة على أسئلتك، ومساعدتك في مشاريعك. ما الذي تريد مني مساعدتك فيه اليوم؟</p>
                         </div>
-                        <p class="text-xs text-gray-500 mt-1">Just now</p>
+                        <p class="text-xs text-gray-500 mt-1">الآن</p>
                     </div>
                 </div>
             </div>
 
             <!-- Typing Indicator -->
             <div id="typingIndicator" class="typing-indicator px-6 pb-4">
-                <div class="flex items-center space-x-3">
+                <div class="flex items-center space-x-3 space-x-reverse">
                     <div class="flex-shrink-0">
                         <div class="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center">
                             <i class="fas fa-robot text-white text-sm"></i>
@@ -81,10 +173,13 @@
                     </div>
                     <div class="flex-1">
                         <div class="bg-blue-100 rounded-lg p-3">
-                            <div class="flex space-x-1">
-                                <div class="w-2 h-2 bg-blue-400 rounded-full animate-bounce"></div>
-                                <div class="w-2 h-2 bg-blue-400 rounded-full animate-bounce" style="animation-delay: 0.1s"></div>
-                                <div class="w-2 h-2 bg-blue-400 rounded-full animate-bounce" style="animation-delay: 0.2s"></div>
+                            <div class="flex items-center space-x-2 space-x-reverse">
+                                <span class="text-gray-600">OpenManus يكتب</span>
+                                <div class="flex space-x-1 space-x-reverse">
+                                    <div class="w-2 h-2 bg-blue-400 rounded-full animate-bounce"></div>
+                                    <div class="w-2 h-2 bg-blue-400 rounded-full animate-bounce" style="animation-delay: 0.1s"></div>
+                                    <div class="w-2 h-2 bg-blue-400 rounded-full animate-bounce" style="animation-delay: 0.2s"></div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -93,47 +188,85 @@
 
             <!-- Input Area -->
             <div class="border-t border-gray-200 p-6">
-                <form id="chatForm" class="flex space-x-3">
+                <form id="chatForm" class="flex space-x-3 space-x-reverse">
                     <input 
                         type="text" 
                         id="messageInput" 
-                        placeholder="Type your message here..." 
-                        class="flex-1 border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                        placeholder="اكتب رسالتك هنا..." 
+                        class="flex-1 border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-right"
+                        maxlength="1000"
                         required
                     >
                     <button 
                         type="submit" 
-                        class="bg-blue-500 hover:bg-blue-600 text-white px-6 py-2 rounded-lg transition-colors duration-200 flex items-center space-x-2"
+                        class="bg-blue-500 hover:bg-blue-600 text-white px-6 py-2 rounded-lg transition-colors duration-200 flex items-center space-x-2 space-x-reverse disabled:opacity-50 disabled:cursor-not-allowed"
                     >
                         <i class="fas fa-paper-plane"></i>
-                        <span>Send</span>
+                        <span>إرسال</span>
                     </button>
                 </form>
+                <div class="text-xs text-gray-500 mt-2 text-center">
+                    اضغط Enter للإرسال • الحد الأقصى: 1000 حرف
+                </div>
             </div>
         </div>
 
         <!-- Features Section -->
         <div class="mt-8 grid md:grid-cols-3 gap-6">
-            <div class="bg-white rounded-lg shadow-lg p-6">
+            <div class="bg-white rounded-lg shadow-lg p-6 hover:shadow-xl transition-all duration-300">
                 <div class="text-center">
                     <i class="fas fa-brain text-4xl text-blue-500 mb-4"></i>
-                    <h3 class="text-lg font-semibold mb-2">AI-Powered</h3>
-                    <p class="text-gray-600">Advanced language models for intelligent responses and task execution</p>
+                    <h3 class="text-lg font-semibold mb-2">مدعوم بالذكاء الاصطناعي</h3>
+                    <p class="text-gray-600">نماذج لغوية متقدمة لاستجابات ذكية وتنفيذ المهام</p>
                 </div>
             </div>
-            <div class="bg-white rounded-lg shadow-lg p-6">
+            <div class="bg-white rounded-lg shadow-lg p-6 hover:shadow-xl transition-all duration-300">
                 <div class="text-center">
                     <i class="fas fa-tools text-4xl text-green-500 mb-4"></i>
-                    <h3 class="text-lg font-semibold mb-2">Multi-Tool Support</h3>
-                    <p class="text-gray-600">Access to various tools and APIs for comprehensive assistance</p>
+                    <h3 class="text-lg font-semibold mb-2">دعم متعدد الأدوات</h3>
+                    <p class="text-gray-600">إمكانية الوصول إلى أدوات وواجهات برمجة متعددة للمساعدة الشاملة</p>
                 </div>
             </div>
-            <div class="bg-white rounded-lg shadow-lg p-6">
+            <div class="bg-white rounded-lg shadow-lg p-6 hover:shadow-xl transition-all duration-300">
                 <div class="text-center">
                     <i class="fas fa-shield-alt text-4xl text-purple-500 mb-4"></i>
-                    <h3 class="text-lg font-semibold mb-2">Secure & Private</h3>
-                    <p class="text-gray-600">Your conversations and data are protected and private</p>
+                    <h3 class="text-lg font-semibold mb-2">آمن وخاص</h3>
+                    <p class="text-gray-600">محادثاتك وبياناتك محمية وخاصة</p>
                 </div>
+            </div>
+        </div>
+
+        <!-- Additional Features -->
+        <div class="mt-8 grid md:grid-cols-2 gap-6">
+            <div class="bg-white rounded-lg shadow-lg p-6">
+                <h3 class="text-lg font-semibold mb-4 text-center">الميزات المتقدمة</h3>
+                <ul class="space-y-2 text-gray-600">
+                    <li class="flex items-center space-x-2 space-x-reverse">
+                        <i class="fas fa-check text-green-500"></i>
+                        <span>توليد الكود والبرمجة</span>
+                    </li>
+                    <li class="flex items-center space-x-2 space-x-reverse">
+                        <i class="fas fa-check text-green-500"></i>
+                        <span>حل المشاكل خطوة بخطوة</span>
+                    </li>
+                    <li class="flex items-center space-x-2 space-x-reverse">
+                        <i class="fas fa-check text-green-500"></i>
+                        <span>جمع المعلومات والبحث</span>
+                    </li>
+                    <li class="flex items-center space-x-2 space-x-reverse">
+                        <i class="fas fa-check text-green-500"></i>
+                        <span>تحليل البيانات والنصوص</span>
+                    </li>
+                </ul>
+            </div>
+            <div class="bg-white rounded-lg shadow-lg p-6">
+                <h3 class="text-lg font-semibold mb-4 text-center">كيفية الاستخدام</h3>
+                <ol class="space-y-2 text-gray-600 list-decimal list-inside">
+                    <li>اكتب سؤالك أو طلبك في مربع النص</li>
+                    <li>اضغط Enter أو زر الإرسال</li>
+                    <li>انتظر رد OpenManus</li>
+                    <li>استمر في المحادثة حسب الحاجة</li>
+                </ol>
             </div>
         </div>
     </main>
@@ -142,16 +275,22 @@
     <footer class="bg-gray-800 text-white mt-12">
         <div class="container mx-auto px-6 py-8">
             <div class="text-center">
-                <p class="text-sm opacity-90">
-                    OpenManus - Open Source AI Agent Framework
+                <p class="text-sm opacity-90 mb-4">
+                    OpenManus - إطار عمل وكيل الذكاء الاصطناعي مفتوح المصدر
                 </p>
-                <div class="mt-4 flex justify-center space-x-4">
-                    <a href="https://github.com/FoundationAgents/OpenManus" class="text-gray-400 hover:text-white transition-colors">
+                <div class="flex justify-center space-x-4 space-x-reverse mb-4">
+                    <a href="https://github.com/FoundationAgents/OpenManus" class="text-gray-400 hover:text-white transition-colors" target="_blank" rel="noopener">
                         <i class="fab fa-github text-xl"></i>
+                        <span class="mr-2">GitHub</span>
                     </a>
-                    <a href="https://discord.gg/DYn29wFk9z" class="text-gray-400 hover:text-white transition-colors">
+                    <a href="https://discord.gg/DYn29wFk9z" class="text-gray-400 hover:text-white transition-colors" target="_blank" rel="noopener">
                         <i class="fab fa-discord text-xl"></i>
+                        <span class="mr-2">Discord</span>
                     </a>
+                </div>
+                <div class="text-xs opacity-75">
+                    <p>تم تطويره بواسطة فريق OpenManus</p>
+                    <p>مرخص تحت MIT License</p>
                 </div>
             </div>
         </div>

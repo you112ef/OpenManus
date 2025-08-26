@@ -1,72 +1,72 @@
-# OpenManus Cloudflare Pages Deployment Guide
+# دليل نشر OpenManus على Cloudflare Pages
 
-This guide will help you deploy the OpenManus web interface to Cloudflare Pages.
+هذا الدليل سيساعدك في نشر واجهة OpenManus على Cloudflare Pages مع backend حقيقي.
 
-## Prerequisites
+## 📋 المتطلبات الأساسية
 
-1. **Cloudflare Account**: You need a Cloudflare account (free tier is sufficient)
-2. **GitHub Repository**: Your OpenManus project should be on GitHub
-3. **Domain (Optional)**: You can use a custom domain or the default `.pages.dev` subdomain
+1. **حساب Cloudflare**: تحتاج إلى حساب Cloudflare (المستوى المجاني كافٍ)
+2. **مستودع GitHub**: مشروع OpenManus يجب أن يكون على GitHub
+3. **نطاق (اختياري)**: يمكنك استخدام نطاق مخصص أو النطاق الفرعي `.pages.dev` الافتراضي
 
-## Deployment Steps
+## 🚀 خطوات النشر
 
-### Method 1: Deploy via Cloudflare Dashboard (Recommended)
+### الطريقة الأولى: النشر عبر لوحة تحكم Cloudflare (موصى بها)
 
-1. **Login to Cloudflare Dashboard**
-   - Go to [dash.cloudflare.com](https://dash.cloudflare.com)
-   - Sign in to your account
+1. **تسجيل الدخول إلى Cloudflare Dashboard**
+   - اذهب إلى [dash.cloudflare.com](https://dash.cloudflare.com)
+   - سجل دخولك إلى حسابك
 
-2. **Navigate to Pages**
-   - Click on "Pages" in the left sidebar
-   - Click "Create a project"
+2. **الانتقال إلى Pages**
+   - انقر على "Pages" في الشريط الجانبي الأيسر
+   - انقر على "Create a project"
 
-3. **Connect to Git**
-   - Choose "Connect to Git"
-   - Select your GitHub account and authorize Cloudflare
-   - Select the `FoundationAgents/OpenManus` repository
+3. **ربط بـ Git**
+   - اختر "Connect to Git"
+   - حدد حساب GitHub واذن Cloudflare
+   - حدد مستودع `FoundationAgents/OpenManus`
 
-4. **Configure Build Settings**
-   - **Project name**: `openmanus` (or your preferred name)
-   - **Production branch**: `main` (or your default branch)
-   - **Framework preset**: `None`
-   - **Build command**: Leave empty (not needed for static site)
-   - **Build output directory**: `web`
-   - **Root directory**: Leave empty (if web folder is in root)
+4. **تكوين إعدادات البناء**
+   - **اسم المشروع**: `openmanus` (أو الاسم الذي تفضله)
+   - **الفرع الإنتاجي**: `main` (أو الفرع الافتراضي)
+   - **إطار العمل**: `None`
+   - **أمر البناء**: اتركه فارغاً (غير مطلوب للموقع الثابت)
+   - **مجلد الإخراج**: `web`
+   - **المجلد الجذر**: اتركه فارغاً (إذا كان مجلد web في الجذر)
 
-5. **Environment Variables** (Optional)
-   - Add any environment variables if needed
-   - For now, you can leave this empty
+5. **المتغيرات البيئية** (اختياري)
+   - أضف أي متغيرات بيئية إذا لزم الأمر
+   - في الوقت الحالي، يمكنك تركها فارغة
 
-6. **Deploy**
-   - Click "Save and Deploy"
-   - Wait for the build to complete
+6. **النشر**
+   - انقر على "Save and Deploy"
+   - انتظر حتى يكتمل البناء
 
-### Method 2: Deploy via Wrangler CLI
+### الطريقة الثانية: النشر عبر Wrangler CLI
 
-1. **Install Wrangler**
+1. **تثبيت Wrangler**
    ```bash
    npm install -g wrangler
    ```
 
-2. **Login to Cloudflare**
+2. **تسجيل الدخول إلى Cloudflare**
    ```bash
    wrangler login
    ```
 
-3. **Navigate to web directory**
+3. **الانتقال إلى مجلد web**
    ```bash
    cd web
    ```
 
-4. **Deploy to Pages**
+4. **النشر على Pages**
    ```bash
    wrangler pages deploy . --project-name=openmanus
    ```
 
-### Method 3: Deploy via GitHub Actions
+### الطريقة الثالثة: النشر عبر GitHub Actions
 
-1. **Create GitHub Actions Workflow**
-   Create `.github/workflows/deploy.yml`:
+1. **إنشاء GitHub Actions Workflow**
+   أنشئ `.github/workflows/deploy.yml`:
 
    ```yaml
    name: Deploy to Cloudflare Pages
@@ -81,7 +81,7 @@ This guide will help you deploy the OpenManus web interface to Cloudflare Pages.
      deploy:
        runs-on: ubuntu-latest
        steps:
-         - uses: actions/checkout@v3
+         - uses: actions/checkout@v4
          
          - name: Deploy to Cloudflare Pages
            uses: cloudflare/pages-action@v1
@@ -93,85 +93,136 @@ This guide will help you deploy the OpenManus web interface to Cloudflare Pages.
              gitHubToken: ${{ secrets.GITHUB_TOKEN }}
    ```
 
-2. **Add Secrets to GitHub**
-   - Go to your repository Settings → Secrets and variables → Actions
-   - Add `CLOUDFLARE_API_TOKEN` and `CLOUDFLARE_ACCOUNT_ID`
+2. **إضافة الأسرار إلى GitHub**
+   - اذهب إلى إعدادات المستودع → Secrets and variables → Actions
+   - أضف `CLOUDFLARE_API_TOKEN` و `CLOUDFLARE_ACCOUNT_ID`
 
-## Configuration Files
+## 🔧 ملفات التكوين
 
-The web directory contains several configuration files:
+مجلد web يحتوي على عدة ملفات تكوين:
 
-- **`_headers`**: Security headers and caching rules
-- **`_redirects`**: URL redirects and routing rules
-- **`package.json`**: Project metadata and scripts
+- **`_headers`**: رؤوس الأمان وقواعد التخزين المؤقت
+- **`_redirects`**: إعادة توجيه URLs وقواعد التوجيه
+- **`package.json`**: بيانات المشروع والنصوص البرمجية
 
-## Custom Domain Setup
+## 🌐 إعداد النطاق المخصص
 
-1. **Add Custom Domain**
-   - In Cloudflare Pages dashboard, go to your project
-   - Click "Custom domains"
-   - Add your domain
+1. **إضافة نطاق مخصص**
+   - في Cloudflare Pages dashboard، اذهب إلى مشروعك
+   - انقر على "Custom domains"
+   - أضف نطاقك
 
-2. **DNS Configuration**
-   - Cloudflare will automatically configure DNS records
-   - If using external DNS, add a CNAME record pointing to your `.pages.dev` URL
+2. **تكوين DNS**
+   - Cloudflare سيقوم بتكوين سجلات DNS تلقائياً
+   - إذا كنت تستخدم DNS خارجي، أضف سجل CNAME يشير إلى URL `.pages.dev` الخاص بك
 
-## Post-Deployment
+## 📊 ما بعد النشر
 
-### Verify Deployment
-- Check that your site loads correctly
-- Test the chat functionality
-- Verify all assets load properly
+### التحقق من النشر
+- تأكد من أن موقعك يعمل بشكل صحيح
+- اختبر وظيفة المحادثة
+- تأكد من تحميل جميع الأصول بشكل صحيح
 
-### Monitor Performance
-- Use Cloudflare Analytics to monitor traffic
-- Check PageSpeed Insights for performance metrics
+### مراقبة الأداء
+- استخدم Cloudflare Analytics لمراقبة حركة المرور
+- تحقق من PageSpeed Insights لمقاييس الأداء
 
-### Update Content
-- Push changes to your main branch
-- Cloudflare Pages will automatically redeploy
+### تحديث المحتوى
+- ادفع التغييرات إلى الفرع الرئيسي
+- Cloudflare Pages سيعيد النشر تلقائياً
 
-## Troubleshooting
+## 🔌 ربط Backend
 
-### Common Issues
+للتطبيق الكامل، تحتاج إلى نشر Python backend:
 
-1. **Build Failures**
-   - Check build logs in Cloudflare dashboard
-   - Verify file paths and structure
-   - Ensure all required files are in the `web` directory
+### خيار 1: Cloudflare Workers (Python)
+```bash
+# نشر backend على Workers
+wrangler deploy
+```
 
-2. **Assets Not Loading**
-   - Check `_headers` file for correct caching rules
-   - Verify file paths in HTML/CSS/JS
-   - Check browser console for errors
+### خيار 2: Heroku
+```bash
+# نشر على Heroku
+heroku create openmanus-backend
+git push heroku main
+```
 
-3. **Routing Issues**
-   - Verify `_redirects` file configuration
-   - Check that client-side routing is working
-   - Test direct URL access
+### خيار 3: Railway
+```bash
+# نشر على Railway
+railway up
+```
 
-### Support
+## 🛠️ استكشاف الأخطاء
 
-- **Cloudflare Pages Documentation**: [developers.cloudflare.com/pages](https://developers.cloudflare.com/pages)
-- **GitHub Issues**: [github.com/FoundationAgents/OpenManus/issues](https://github.com/FoundationAgents/OpenManus/issues)
-- **Discord Community**: [discord.gg/DYn29wFk9z](https://discord.gg/DYn29wFk9z)
+### المشاكل الشائعة
 
-## Next Steps
+1. **فشل البناء**
+   - تحقق من سجلات البناء في Cloudflare dashboard
+   - تأكد من مسارات الملفات والهيكل
+   - تأكد من وجود جميع الملفات المطلوبة في مجلد `web`
 
-After successful deployment:
+2. **عدم تحميل الأصول**
+   - تحقق من ملف `_headers` لقواعد التخزين المؤقت الصحيحة
+   - تأكد من مسارات الملفات في HTML/CSS/JS
+   - تحقق من console المتصفح للأخطاء
 
-1. **Integrate with Backend**: Connect the web interface to your OpenManus backend API
-2. **Add Authentication**: Implement user authentication if needed
-3. **Customize UI**: Modify colors, layout, and branding
-4. **Add Features**: Implement additional functionality like file uploads, tool selection, etc.
+3. **مشاكل التوجيه**
+   - تحقق من ملف `_redirects`
+   - تأكد من أن التوجيه من جانب العميل يعمل
+   - اختبر الوصول المباشر للـ URLs
 
-## Security Considerations
+### الدعم
 
-- The `_headers` file includes security headers
-- Content Security Policy is configured
-- HTTPS is enforced by Cloudflare
-- Regular security updates are recommended
+- **توثيق Cloudflare Pages**: [developers.cloudflare.com/pages](https://developers.cloudflare.com/pages)
+- **مشاكل GitHub**: [github.com/FoundationAgents/OpenManus/issues](https://github.com/FoundationAgents/OpenManus/issues)
+- **مجتمع Discord**: [discord.gg/DYn29wFk9z](https://discord.gg/DYn29wFk9z)
+
+## 🚀 الخطوات التالية
+
+بعد النشر الناجح:
+
+1. **ربط Backend**: اربط الواجهة بـ OpenManus backend API
+2. **إضافة المصادقة**: نفذ مصادقة المستخدم إذا لزم الأمر
+3. **تخصيص الواجهة**: عدل الألوان والتخطيط والعلامة التجارية
+4. **إضافة الميزات**: نفذ وظائف إضافية مثل رفع الملفات، اختيار الأدوات، إلخ
+
+## 🔒 اعتبارات الأمان
+
+- ملف `_headers` يتضمن رؤوس أمان
+- سياسة أمان المحتوى مُكوّنة
+- HTTPS مفروض من Cloudflare
+- يُنصح بالتحديثات الأمنية المنتظمة
+
+## 📱 اختبار التطبيق
+
+### اختبار محلي
+```bash
+cd web
+python app.py  # Backend
+npm run dev    # Frontend
+```
+
+### اختبار Docker
+```bash
+cd web
+npm run docker:compose
+```
+
+### اختبار النشر
+1. ادفع التغييرات إلى GitHub
+2. انتظر اكتمال النشر
+3. اختبر الموقع المنشور
 
 ---
 
-**Note**: This is a static web interface. For full OpenManus functionality, you'll need to deploy the Python backend separately (e.g., on Cloudflare Workers, Heroku, or similar platforms) and update the JavaScript to call your actual API endpoints.
+**ملاحظة مهمة**: هذه واجهة ويب ثابتة. للحصول على وظائف OpenManus الكاملة، تحتاج إلى نشر Python backend منفصل وتحديث JavaScript لاستدعاء نقاط النهاية الفعلية.
+
+## 🎯 نصائح للنشر الناجح
+
+1. **اختبر محلياً أولاً**: تأكد من أن كل شيء يعمل قبل النشر
+2. **تحقق من الملفات**: تأكد من وجود جميع الملفات في مجلد `web`
+3. **راجع السجلات**: تحقق من سجلات البناء للأخطاء
+4. **اختبر بعد النشر**: تأكد من أن الموقع يعمل كما هو متوقع
+5. **راقب الأداء**: استخدم أدوات المراقبة لتحسين الأداء
