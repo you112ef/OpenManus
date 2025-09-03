@@ -1,6 +1,6 @@
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import HTMLResponse
+from fastapi.responses import HTMLResponse, FileResponse
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
 import asyncio
@@ -34,6 +34,9 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+# Static assets for PWA
+app.mount("/assets", StaticFiles(directory=Path(__file__).parent.parent / "assets"), name="assets")
 
 # Request/Response models
 class ChatRequest(BaseModel):
@@ -89,6 +92,21 @@ async def read_root():
             </body>
         </html>
         """
+
+# PWA routes
+@app.get("/manifest.webmanifest", include_in_schema=False)
+async def manifest_file():
+    file_path = Path(__file__).parent / "manifest.webmanifest"
+    if file_path.exists():
+        return FileResponse(file_path, media_type="application/manifest+json")
+    raise HTTPException(status_code=404, detail="Manifest not found")
+
+@app.get("/service-worker.js", include_in_schema=False)
+async def service_worker_file():
+    file_path = Path(__file__).parent / "service-worker.js"
+    if file_path.exists():
+        return FileResponse(file_path, media_type="application/javascript")
+    raise HTTPException(status_code=404, detail="Service worker not found")
 
 @app.post("/api/chat", response_model=ChatResponse)
 async def chat_endpoint(request: ChatRequest):

@@ -101,6 +101,12 @@
             80%, 100% { content: '...'; }
         }
     </style>
+    <link rel="manifest" href="manifest.webmanifest">
+    <meta name="application-name" content="OpenManus">
+    <meta name="theme-color" content="#2563eb">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="mobile-web-app-capable" content="yes">
+    <link rel="apple-touch-icon" href="assets/logo.jpg">
 </head>
 <body class="bg-gray-50 rtl">
     <!-- Header -->
@@ -297,5 +303,14 @@
     </footer>
 
     <script src="script.js"></script>
+    <script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('service-worker.js', { scope: './' })
+                    .then(reg => console.log('Service worker registered', reg.scope))
+                    .catch(err => console.warn('Service worker registration failed', err));
+            });
+        }
+    </script>
 </body>
 </html>
